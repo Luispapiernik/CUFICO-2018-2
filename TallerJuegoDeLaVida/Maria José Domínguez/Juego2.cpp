@@ -49,14 +49,13 @@ void Mapa::dibujar()
 	  if(mapa[f][c] == 1)
 	    cout << "* ";
 	  else if (mapa[f][c] == 2)
-	    cout << "O ";
+	    cout << "+ ";
 	  else
 	    cout << ". ";
         }
       cout << "\n";
     }
 }
-
 int Mapa::analizarVecinos1(int posf, int posc)
 {
   vecinos1 = 0;
@@ -117,7 +116,6 @@ int Mapa::analizarVecinos2(int posf, int posc)
   return vecinos2;
 }
 
-
 void Mapa::ciclo()
 {
   vector<vector<int> > nueva_conf = mapa;
@@ -128,63 +126,34 @@ void Mapa::ciclo()
         {
 	  int n_vecinos1 = analizarVecinos1(f, c);
 	  int n_vecinos2 = analizarVecinos2(f, c);
-	  if (n_vecinos1 >= n_vecinos2)
-	    {
-	      if(mapa[f][c] == 0)
-		{
-		  if(vecinos1 == 3)
-		    nueva_conf[f][c] = 1;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if (mapa[f][c] == 1)
-		{
-		  if(vecinos1 == 2 || vecinos1 == 3)
-		    nueva_conf[f][c] = 1;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if(mapa[f][c] == 2)
-		{
-		  if(vecinos1 == 3)
-		    nueva_conf[f][c] = 1;
-		  else {
-		    if(vecinos2 == 2 || vecinos2 == 3)
-		      nueva_conf[f][c] = 2;
-		    else
-		      nueva_conf[f][c] = 0;
-		  }
-		}
-	    }
-	  else
-	    {
-	     if(mapa[f][c] == 0)
-		{
-		  if(vecinos2 == 3)
-		    nueva_conf[f][c] = 2;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if (mapa[f][c] == 2)
-		{
-		  if(vecinos2 == 2 || vecinos2 == 3)
-		    nueva_conf[f][c] = 2;
-		  else
-		    nueva_conf[f][c] = 0;
-		}
-	      if(mapa[f][c] == 1)
-		{
-		  if(vecinos2 == 3)
-		    nueva_conf[f][c] = 2;
-		  else{
-		    if(vecinos1 == 2 || vecinos1 == 3)
-		      nueva_conf[f][c] = 1;
-		    else
-		      nueva_conf[f][c] = 0;
-		  }
-		}
-	    } 
-	}
+	  if(mapa[f][c] == 0)
+            {
+	      if(vecinos1 == 3 && vecinos1 >= vecinos2)
+		nueva_conf[f][c] = 1;
+		  else if(vecinos2 ==3 && vecinos2 > vecinos1)
+		nueva_conf[f][c] = 2;
+	      else
+		nueva_conf[f][c] = 0;
+            }
+	  if (mapa[f][c] == 1)
+            {
+	      if(vecinos1 == 2 || vecinos1 == 3 && vecinos1 >= vecinos2)
+		nueva_conf[f][c] = 1;
+		  else if(vecinos1 == 2 || vecinos1 == 3 && vecinos2 > vecinos1)
+		nueva_conf[f][c] = 2;
+	      else
+		nueva_conf[f][c] = 0;
+            }
+      if (mapa[f][c] == 2)
+            {
+	      if(vecinos2 == 2 || vecinos2 == 3 && vecinos2 > vecinos1)
+		nueva_conf[f][c] = 2;
+		  else if(vecinos2 == 2 || vecinos2 == 3 && vecinos1 >= vecinos2)
+		nueva_conf[f][c] = 1;
+	      else
+		nueva_conf[f][c] = 0;
+            }
+        }
     }
   
   mapa = nueva_conf;
@@ -193,7 +162,7 @@ void Mapa::ciclo()
 int main()
 {
   srand(time(NULL));
-  Mapa mapa(20, 20);
+  Mapa mapa(50, 50);
   while(1)
     {
       mapa.dibujar();
